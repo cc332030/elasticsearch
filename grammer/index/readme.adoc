@@ -1,0 +1,136 @@
+
+= 索引
+
+默认一个索引有 5 个分片，一个备份
+
+== 类型
+
+索引默认没有结构化信息（mappings 字段）
+
+=== 创建索引
+
+添加结构化信息，people 是新索引名
+
+POST http://localhost:9200/people
+
+[source,json]
+----
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "man": {
+        "properties": {
+          "name": {
+            "type": "text"
+          },
+          "country": {
+            "type": "text"
+          },
+          "age": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "date",
+            "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+          }
+        }
+    },
+    "woman": {}
+  }
+}
+
+----
+
+=== 已有索引添加结构化信息
+
+添加结构化信息，book 是已存在的索引名
+
+POST http://localhost:9200/book/novel/_mappings
+[source,json]
+----
+{
+  "novel": {
+    "properties": {
+      "title": {
+        "type": "text"
+      }
+    }
+  }
+}
+
+----
+
+=== 插入数据
+
+自动生成 id
+
+POST http://localhost:9200/people/man
+[source,json]
+----
+{
+  "name": "瓦力",
+  "country": "Chgina",
+  "age": 30,
+  "date": "1999-01-01"
+}
+----
+
+指定id
+
+PUT http://localhost:9200/people/man/1
+[source,json]
+----
+{
+  "name": "瓦力",
+  "country": "Chgina",
+  "age": 30,
+  "date": "1999-01-01"
+}
+----
+
+=== 修改数据
+
+POST http://localhost:9200/people/man/1/_update
+[source,json]
+----
+{
+  "doc": {
+    "name": "瓦力2"
+  }
+}
+----
+
+==== 脚本方式修改
+
+POST http://localhost:9200/people/man/1/_update
+[source,json]
+----
+{
+  "script": {
+    "lang": "painless",
+    "inline": "ctx._source.age += 10"
+  }
+}
+----
+
+[source,json]
+----
+{
+  "script": {
+    "lang": "painless",
+    "inline": "ctx._source.age = params.age",
+    "params": {
+      "age": 100
+    }
+  }
+}
+----
+
+=== 删除
+
+DELETE http://localhost:9200/people
+
+DELETE http://localhost:9200/people/man/1
