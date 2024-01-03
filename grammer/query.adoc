@@ -1,0 +1,36 @@
+
+= es query
+
+== term
+
+=== term
+精准查询，不分词
+
+=== terms
+term 的多词版，like in
+
+== math
+分词匹配查询
+
+=== match_all
+=== match
+=== multi_match
+
+=== match_phrase
+分词，且顺序不能变
+
+== fuzzy
+
+可以用于纠正去拼写的问题
+
+fuzziness是可以允许纠正错误拼写的个数
+
+== wildcard
+通配符查询
+
+== bool
+bool查询本身没有查询功能，而是基于逻辑值使用前面几种查询方式进行组合查询。
+
+=== should
+=== must
+=== must_not
